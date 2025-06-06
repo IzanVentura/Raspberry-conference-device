@@ -1,0 +1,114 @@
+// ==UserScript==
+// @name         Autoacciones por URL
+// @namespace    http://tampermonkey.net/
+// @version      1.1
+// @description  Se une automaticamente a las llamadas
+// @author       Izan
+// @match        *://meet.google.com/*
+// @match        *://app.zoom.us/*
+// @match        *://teams.live.com/*
+// @match        *://meet.jit.si/*
+// @grant        none
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    /*** === Registro de acciones por URL === ***/
+    const accionesPorURL = [
+        {
+            match: url => url.hostname === 'meet.google.com',
+            action: autoUnirseMeet
+        },
+        {
+            match: url => url.hostname === 'app.zoom.us',
+            action: autoUnirseZoom
+        },
+        {
+            match: url => url.hostname === 'teams.live.com',
+            action: autoUnirseTeams
+        },
+        {
+            match: url => url.hostname === 'meet.jit.si',
+            action: autoUnirseJitsi
+        },
+    ];
+
+    /*** === Funciones de acción === ***/
+    function autoUnirseMeet() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonUnirme = botones.find(b => ['unirme ahora', 'join now'].includes(b.textContent.trim().toLowerCase()));
+                if (botonUnirme) {
+                    botonUnirme.focus(); // Solo enfoca el botón
+                    console.log('Botón "Unirme ahora" enfocado (Meet)');
+                } else {
+                    console.log('Botón "Unirme ahora" no encontrado (Meet)');
+                }
+            }, 5000);
+        });
+    }
+
+
+    function autoUnirseZoom() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonUnirme = botones.find(b => ['unirse', 'join'].includes(b.textContent.trim().toLowerCase()));
+                if (botonUnirme) {
+                    botonUnirme.focus();
+                    console.log('Botón "Unirse" enfocado (Zoom)');
+                } else {
+                    console.log('Botón "Unirse" no encontrado (Zoom)');
+                }
+            }, 5000);
+        });
+    }
+
+    function autoUnirseTeams() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonUnirme = botones.find(b => ['unirse ahora', 'join now'].includes(b.textContent.trim().toLowerCase()));
+                if (botonUnirme) {
+                    botonUnirme.focus();
+                    console.log('Botón "Unirse ahora" enfocado (Teams)');
+                } else {
+                    console.log('Botón "Unirse ahora" no encontrado (Teams)');
+                }
+            }, 12000);
+        });
+    }
+
+
+    function autoUnirseJitsi() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const botones = Array.from(document.querySelectorAll('[data-testid="prejoin.joinMeeting"]'));
+                const botonUnirme = botones.find(b => ['entrar a la reunión', 'join meeting'].includes(b.textContent.trim().toLowerCase()));
+                if (botonUnirme) {
+                    botonUnirme.focus();
+                    console.log('Botón "Unirme ahora" enfocado (Jitsi)');
+                } else {
+                    console.log('Botón "Unirme ahora" no encontado (Jitsi)');
+                }
+            }, 4000);
+        });
+    }
+
+    /*** === Router principal === ***/
+    const urlActual = window.location;
+
+    for (const { match, action } of accionesPorURL) {
+        try {
+            if (match(urlActual)) {
+                console.log(`Ejecutando acción para ${urlActual.hostname}`);
+                action();
+                break;
+            }
+        } catch (err) {
+            console.error('Error en evaluación de ruta:', err);
+        }
+    }
+})();
