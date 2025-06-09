@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to right, #f9f9f9, #e0eafc);
+  margin: 0;
+  padding: 40px;
+}
+
+h1#Eventos {
+  text-align: center;
+  font-size: 2em;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.evento {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 10px;
+  width: calc((100% / 3) - 25px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.evento:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.evento.activo {
+  border: 2px solid #007bff;
+  background-color: #e6f0ff;
+}
+
+.evento a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 15px;
+}
+
+.evento h3 {
+  margin: 0 0 10px;
+  font-size: 1.2em;
+  color: #2c3e50;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+
+.fecha {
+  color: #555;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.no-eventos {
+  text-align: center;
+  font-size: 1.1em;
+  color: #888;
+  margin-top: 50px;
+}
+

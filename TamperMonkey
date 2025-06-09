@@ -6,6 +6,7 @@
 // @author       Izan
 // @match        *://meet.google.com/*
 // @match        *://app.zoom.us/*
+// @match        *://zoom.us/*
 // @match        *://teams.live.com/*
 // @match        *://meet.jit.si/*
 // @grant        none
@@ -34,14 +35,104 @@
         },
     ];
 
+    /*** === Atajos de teclado === ***/
+    window.addEventListener('keydown', function(event) {
+        // Shift+S: cerrar pestaña
+        if (event.shiftKey && event.key.toLowerCase() === 's') {
+            const url = window.location;
+            if (url.hostname === 'app.zoom.us') {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonSalir1 = botones.find(b => {
+                    const label = b.getAttribute('aria-label')?.toLowerCase();
+                    return label && (label.includes('fin') || label.includes('leave'));
+                });
+                const cerrar = confirm("¿Quieres salir de la llamada?");
+                if (cerrar) {
+                    if (botonSalir1) {
+                        console.log('Clic en botonSalir1');
+                        botonSalir1.click();
+                    }
+                    setTimeout(() => {
+                        const botonSalir2 = Array.from(document.querySelectorAll('button')).find(b =>
+                            ['salir de la reunión', 'leave meeting'].includes(b.textContent.trim().toLowerCase())
+                        );
+                        if (botonSalir2) {
+                            console.log('Clic en botonSalir2 (después de aparecer)');
+                            botonSalir2.click();
+                        }}, 600);
+                    setTimeout(() => {
+                            window.close();
+                        }, 2000);
+                }
+            } else {
+                const cerrar = confirm("¿Quieres salir de la llamada?");
+                if (cerrar) {
+                    window.close();
+                }
+            };
+        }
+
+        // Shift+M: acción personalizada por plataforma
+        if (event.shiftKey && event.key.toLowerCase() === 'm') {
+            const url = window.location;
+
+            if (url.hostname === 'meet.google.com') {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonMicro = botones.find(b => {
+                    const label = b.getAttribute('aria-label')?.toLowerCase();
+                    return label && (label.includes('activar micrófono') || label.includes('silenciar micrófono') ||
+                                    label.includes('mute microphone') || label.includes('unmute microphone'));
+                });
+                if (botonMicro) {
+                    botonMicro.click();
+                    console.log('Botón "Microfono" pulsado (Meet)');
+                } else {
+                    console.log('Botón "Microfono" no encontrado (Meet)');
+                }
+            } else if (url.hostname === 'app.zoom.us') {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonMicro = botones.find(b => {
+                    const label = b.getAttribute('aria-label')?.toLowerCase();
+                    return label && (label.includes('mute my microphone') || label.includes('unmute my microphone'));
+                });
+                if (botonMicro) {
+                    botonMicro.click();
+                    console.log('Botón "Microfono" pulsado (Zoom)');
+                } else {
+                    console.log('Botón "Microfono" no encontrado (Zoom)');
+                }
+            } else if (url.hostname === 'teams.live.com') {
+                const botonMicro = document.querySelector('button[data-inp="microphone-button"]');
+                if (botonMicro) {
+                    botonMicro.click();
+                    console.log('Botón "Microfono" pulsado (Teams)');
+                } else {
+                    console.log('Botón "Microfono" no encontrado (Teams)');
+                }
+            } else if (url.hostname === 'meet.jit.si') {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonMicro = botones.find(b => ['activar micrófono', 'silenciar micrófono', 'mute microphone', 'unmute microphone'].includes(b.textContent.trim().toLowerCase()));
+                if (botonMicro) {
+                    botonMicro.click();
+                    console.log('Botón "Microfono" pulsado (Meet)');
+                } else {
+                    console.log('Botón "Microfono" no encontrado (Meet)');
+                }
+            } else {
+                console.log('Shift+M pulsado, pero URL no reconocida');
+            }
+        }
+    });
+
+
     /*** === Funciones de acción === ***/
     function autoUnirseMeet() {
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const botones = Array.from(document.querySelectorAll('button'));
-                const botonUnirme = botones.find(b => ['unirme ahora', 'join now'].includes(b.textContent.trim().toLowerCase()));
+                const botonUnirme = botones.find(b => ['unirme ahora', 'solicitar unirse', 'join now', 'request to join'].includes(b.textContent.trim().toLowerCase()));
                 if (botonUnirme) {
-                    botonUnirme.focus(); // Solo enfoca el botón
+                    botonUnirme.focus();
                     console.log('Botón "Unirme ahora" enfocado (Meet)');
                 } else {
                     console.log('Botón "Unirme ahora" no encontrado (Meet)');
@@ -49,7 +140,6 @@
             }, 5000);
         });
     }
-
 
     function autoUnirseZoom() {
         window.addEventListener('load', () => {
@@ -81,7 +171,6 @@
         });
     }
 
-
     function autoUnirseJitsi() {
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -96,7 +185,7 @@
             }, 4000);
         });
     }
-
+    
     /*** === Router principal === ***/
     const urlActual = window.location;
 

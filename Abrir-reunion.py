@@ -1,23 +1,25 @@
 from __future__ import print_function
-import datetime
 import os.path
+import json
+import html
+import subprocess
+from urllib.parse import urlparse
 import pytz
 import re
-import json
-import subprocess
-import sys
-import html
-from urllib.parse import urlparse
 import time
-
+from datetime import datetime, timedelta
+from dateutil import parser
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from dateutil import parser
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 URL_REGEX = re.compile(r'https?://[^\s<>"\']+')
+HTML_OUTPUT_PATH = '/home/pi/RPI-Conference/eventos.html'
+CRED_PATH = '/home/pi/RPI-Conference/credentials.json'
+TOKEN_PATH = '/home/pi/RPI-Conference/token.json'
+LOCAL_TZ = pytz.timezone('Europe/Madrid')
 
 def extract_links_from_event(event):
     text_to_search = []
@@ -42,11 +44,10 @@ def extract_links_from_event(event):
 
     for text in text_to_search:
         text = html.unescape(text)
-
         href_matches = re.findall(r'href=["\'](https?://[^"\'>\s]+)', text)
         raw_matches = URL_REGEX.findall(text)
-
         all_matches = href_matches + raw_matches
+
         for url in all_matches:
             url = url.strip().rstrip('.,);\'">')
             if "google.com/calendar" in url or "fonts.gstatic.com" in url:
@@ -60,91 +61,122 @@ def extract_links_from_event(event):
 
     return None
 
-
 def is_chromium_running():
     try:
         result = subprocess.run(['pgrep', '-f', 'chromium'], stdout=subprocess.DEVNULL)
         return result.returncode == 0
     except Exception as e:
-        print(f"Error comprobando proceso chromium: {e}")
+        print(f"Error checking chromium process: {e}")
         return False
 
-def main():
+def get_calendar_service():
     creds = None
-    token_path = '/home/pi/Calendario/token.json'
-    creds_path = '/home/pi/Calendario/credentials.json'
-
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(creds_path, SCOPES)
-            try:
-                creds = flow.run_local_server(port=0)
-            except Exception:
-                print("No se pudo abrir el navegador automáticamente. Usando autenticación por consola...")
-                creds = flow.run_console()
-        with open(token_path, 'w') as token:
+            flow = InstalledAppFlow.from_client_secrets_file(CRED_PATH, SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open(TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
+    return build('calendar', 'v3', credentials=creds)
 
-    service = build('calendar', 'v3', credentials=creds)
+def generate_html(events):
+    html_blocks = ""
 
-    now_utc = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
-    now_str = now_utc.isoformat()
-    events_result = service.events().list(
-        calendarId='primary',
-        timeMin=now_str,
-        maxResults=10,
-        singleEvents=True,
-        orderBy='startTime').execute()
-
-    events = events_result.get('items', [])
     if not events:
-        print('No hay eventos próximos.')
-        return
+        html_blocks = "<p class='no-eventos'>No hay eventos en los próximos 7 días.</p>"
+    else:
+        for i, event in enumerate(events):
+            if not event['start'].get('dateTime'):
+                continue
+            summary = event.get('summary', 'Sin título')
+            start_dt = parser.isoparse(event['start']['dateTime']).astimezone(LOCAL_TZ)
+            end_dt = parser.isoparse(event['end']['dateTime']).astimezone(LOCAL_TZ)
+            link = extract_links_from_event(event)
+            if not link:
+                continue
+            html_blocks += f"""
+            <div class="evento" tabindex="0" data-index="{i}">
+              <a href="{link}" target="_blank">
+                <h3>{html.escape(summary)}</h3>
+                <p class="fecha">Inicio: {start_dt.strftime('%Y-%m-%d %H:%M')}<br>Fin: {end_dt.strftime('%Y-%m-%d %H:%M')}</p>
+              </a>
+            </div>
+            """
 
-    next_event = None
-    for event in events:
-        if event['start'].get('dateTime'):
-            next_event = event
-            break
+        if not html_blocks:
+            html_blocks = "<p class='no-eventos'>No hay eventos en los próximos 7 días.</p>"
 
-    if not next_event:
-        print("No hay próximos eventos con fecha y hora específica.")
-        return
+    with open(HTML_OUTPUT_PATH, 'w', encoding='utf-8') as f:
+        f.write(f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="30">
+  <title>Eventos</title>
+  <link rel="stylesheet" type="text/css" href="estilos.css">
+</head>
+<body>
+  <h1 id="Eventos">Lista de Eventos (próximos 7 días)</h1>
+  <div class="container">
+    {html_blocks}
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {{
+      const eventos = document.querySelectorAll('.evento');
+      let index = 0;
 
-    summary = next_event.get('summary', 'Sin título')
-    local_tz = pytz.timezone('Europe/Madrid')
-    start_dt = parser.isoparse(next_event['start']['dateTime']).astimezone(local_tz)
-    end_dt = parser.isoparse(next_event['end']['dateTime']).astimezone(local_tz)
+      const savedIndex = localStorage.getItem('eventoActivoIndex');
+      if (savedIndex !== null && eventos.length > savedIndex) {{
+          index = parseInt(savedIndex, 10);
+      }} else {{
+          localStorage.removeItem('eventoActivoIndex');
+      }}
 
-    print(f"Próxima reunión: {summary} de {start_dt} a {end_dt}")
+      if (eventos.length > 0) {{
+          eventos[index].classList.add('activo');
+          eventos[index].focus();
+      }}
 
-    link = extract_links_from_event(next_event)
-    if not link:
-        print("No se encontraron enlaces.")
-        return
+      function updateActive(newIndex) {{
+        if (eventos.length === 0) return;
+        eventos[index].classList.remove('activo');
+        index = (newIndex + eventos.length) % eventos.length;
+        eventos[index].classList.add('activo');
+        eventos[index].focus();
+        eventos[index].scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+        localStorage.setItem('eventoActivoIndex', index);
+      }}
 
-    opened_file = '/home/pi/Calendario/.last_link_opened'
-    if os.path.exists(opened_file):
-        with open(opened_file, 'r') as f:
-            last_link = f.read().strip()
-        if last_link == link:
-            print("La reunión ya fue abierta anteriormente.")
-            return
+      document.addEventListener('keydown', (e) => {{
+        if (e.key === 'ArrowDown') {{
+          updateActive(index + 3);
+          e.preventDefault();
+        }} else if (e.key === 'ArrowUp') {{
+          updateActive(index - 3);
+          e.preventDefault();
+        }} else if (e.key === 'ArrowRight') {{
+          updateActive(index + 1);
+          e.preventDefault();
+        }} else if (e.key === 'ArrowLeft') {{
+          updateActive(index - 1);
+          e.preventDefault();
+        }}
+      }});
+    }});
+  </script>
+</body>
+</html>""")
+    print(f"[INFO] HTML actualizado en: {HTML_OUTPUT_PATH}")
+    return True
 
-    chromium_running = is_chromium_running()
-    if chromium_running:
-        print("Chromium está abierto con otro enlace, no se abrirá otro.")
-        return
 
 
-    seconds_to_start = (start_dt - now_utc).total_seconds()
-
-    if (start_dt <= now_utc <= end_dt) or (0 <= seconds_to_start <= 60):
-        print(link)
+def launch_chromium():
+    if not is_chromium_running():
         try:
             subprocess.Popen([
                 'chromium',
@@ -155,14 +187,43 @@ def main():
                 '--disable-features=WebRtcUseEchoCanceller3,WebRtcUseHardwareAcousticEchoCanceller,WebRtcUseExperimentalAgc',
                 '--disable-gpu-compositing',
                 '--disable-accelerated-video-decode',
-                '--use-gl=egl',
-                link
+                HTML_OUTPUT_PATH
             ])
-            with open(opened_file, 'w') as f:
-                f.write(link)
+            print("[INFO] Chromium lanzado.")
         except FileNotFoundError:
-            print("Chromium no está instalado o no se encuentra 'chromium-browser' en el PATH.")
-            sys.exit(1)
+            print("Chromium no está instalado o no se encuentra en el PATH.")
+    else:
+        print("[INFO] Chromium ya está en ejecución.")
+
+def main_loop():
+    service = get_calendar_service()
+    while True:
+        try:
+            now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+            future_utc = now_utc + timedelta(days=7)
+
+            events_result = service.events().list(
+                calendarId='primary',
+                timeMin=now_utc.isoformat(),
+                timeMax=future_utc.isoformat(),
+                maxResults=20,
+                singleEvents=True,
+                orderBy='startTime'
+            ).execute()
+
+            events = events_result.get('items', [])
+            if not events:
+                print('[INFO] No upcoming events in the next 7 days.')
+
+            # Genera el HTML y lanza Chromium en todos los casos
+            generate_html(events)
+            launch_chromium()
+
+        except Exception as e:
+            print(f"[ERROR] {e}")
+
+        time.sleep(30)
+
 
 if __name__ == '__main__':
-    main()
+    main_loop()
