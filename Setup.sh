@@ -10,6 +10,7 @@ pip3 install --upgrade \
     google-auth-oauthlib \
     pytz \
     python-dateutil \
+    pyautogui\
     --break-system-packages
 
 mkdir -p /home/pi/RPI-Conference
@@ -18,6 +19,10 @@ echo "" > /home/pi/RPI-Conference/eventos.html
 cp ./Abrir-reunion.py /home/pi/RPI-Conference/Abrir-reunion.py
 cp ./cec_control.sh /home/pi/RPI-Conference/cec_control.sh
 cp ./estilos.css /home/pi/RPI-Conference/estilos.css
+cp ./credentials.json /home/pi/RPI-Conference/credentials.json
+chmod +x /home/pi/RPI-Conference/Abrir-reunion.py
+chmod +x /home/pi/RPI-Conference/cec_control.sh
+
 
 mkdir -p /home/pi/.config/autostart
 

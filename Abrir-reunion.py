@@ -7,6 +7,8 @@ from urllib.parse import urlparse
 import pytz
 import re
 import time
+import os
+import pyautogui
 from datetime import datetime, timedelta
 from dateutil import parser
 from google.auth.transport.requests import Request
@@ -61,6 +63,7 @@ def extract_links_from_event(event):
 
     return None
 
+
 def is_chromium_running():
     try:
         result = subprocess.run(['pgrep', '-f', 'chromium'], stdout=subprocess.DEVNULL)
@@ -68,6 +71,7 @@ def is_chromium_running():
     except Exception as e:
         print(f"Error checking chromium process: {e}")
         return False
+
 
 def get_calendar_service():
     creds = None
@@ -124,59 +128,68 @@ def generate_html(events):
   <div class="container">
     {html_blocks}
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {{
-      const eventos = document.querySelectorAll('.evento');
-      let index = 0;
+<script>
+  document.addEventListener('DOMContentLoaded', () => {{
+    const eventos = document.querySelectorAll('.evento');
+    let index = 0;
 
-      const savedIndex = localStorage.getItem('eventoActivoIndex');
-      if (savedIndex !== null && eventos.length > savedIndex) {{
-          index = parseInt(savedIndex, 10);
-      }} else {{
-          localStorage.removeItem('eventoActivoIndex');
-      }}
+    const savedIndex = localStorage.getItem('eventoActivoIndex');
+    if (savedIndex !== null && eventos.length > savedIndex) {{
+        index = parseInt(savedIndex, 10);
+    }} else {{
+        localStorage.removeItem('eventoActivoIndex');
+    }}
 
-      if (eventos.length > 0) {{
-          eventos[index].classList.add('activo');
-          eventos[index].focus();
-      }}
-
-      function updateActive(newIndex) {{
-        if (eventos.length === 0) return;
-        eventos[index].classList.remove('activo');
-        index = (newIndex + eventos.length) % eventos.length;
+    if (eventos.length > 0) {{
         eventos[index].classList.add('activo');
         eventos[index].focus();
-        eventos[index].scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-        localStorage.setItem('eventoActivoIndex', index);
-      }}
+    }}
 
-      document.addEventListener('keydown', (e) => {{
-        if (e.key === 'ArrowDown') {{
-          updateActive(index + 3);
-          e.preventDefault();
-        }} else if (e.key === 'ArrowUp') {{
-          updateActive(index - 3);
-          e.preventDefault();
-        }} else if (e.key === 'ArrowRight') {{
-          updateActive(index + 1);
-          e.preventDefault();
-        }} else if (e.key === 'ArrowLeft') {{
-          updateActive(index - 1);
-          e.preventDefault();
+    function updateActive(newIndex) {{
+      if (eventos.length === 0) return;
+      eventos[index].classList.remove('activo');
+      index = (newIndex + eventos.length) % eventos.length;
+      eventos[index].classList.add('activo');
+      eventos[index].focus();
+      eventos[index].scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+      localStorage.setItem('eventoActivoIndex', index);
+    }}
+
+    document.addEventListener('keydown', (e) => {{
+      if (e.key === 'ArrowDown') {{
+        updateActive(index + 3);
+        e.preventDefault();
+      }} else if (e.key === 'ArrowUp') {{
+        updateActive(index - 3);
+        e.preventDefault();
+      }} else if (e.key === 'ArrowRight') {{
+        updateActive(index + 1);
+        e.preventDefault();
+      }} else if (e.key === 'ArrowLeft') {{
+        updateActive(index - 1);
+        e.preventDefault();
+      }} else if (e.key === 'Enter') {{
+        const enlace = eventos[index].querySelector('a');
+        if (enlace && enlace.href) {{
+          window.open(enlace.href, '_blank');
         }}
-      }});
+        e.preventDefault();
+      }}
     }});
-  </script>
+  }});
+</script>
 </body>
 </html>""")
     print(f"[INFO] HTML actualizado en: {HTML_OUTPUT_PATH}")
     return True
 
 
-
 def launch_chromium():
     if not is_chromium_running():
+        env = os.environ.copy()
+        env['DISPLAY'] = ':0'
+        env['XDG_RUNTIME_DIR'] = '/run/user/1000'
+        env['DBUS_SESSION_BUS_ADDRESS'] = 'unix:path=/run/user/1000/bus'
         try:
             subprocess.Popen([
                 'chromium',
@@ -187,13 +200,19 @@ def launch_chromium():
                 '--disable-features=WebRtcUseEchoCanceller3,WebRtcUseHardwareAcousticEchoCanceller,WebRtcUseExperimentalAgc',
                 '--disable-gpu-compositing',
                 '--disable-accelerated-video-decode',
+                '--hide-crash-restore-bubble',
                 HTML_OUTPUT_PATH
-            ])
+            ], env=env)
             print("[INFO] Chromium lanzado.")
         except FileNotFoundError:
             print("Chromium no está instalado o no se encuentra en el PATH.")
+        screen_width, screen_height = pyautogui.size()
+        center_x = screen_width // 2
+        center_y = screen_height // 2
+        pyautogui.moveTo(center_x, center_y)
     else:
         print("[INFO] Chromium ya está en ejecución.")
+
 
 def main_loop():
     service = get_calendar_service()

@@ -40,7 +40,23 @@
         // Shift+S: cerrar pestaña
         if (event.shiftKey && event.key.toLowerCase() === 's') {
             const url = window.location;
-            if (url.hostname === 'app.zoom.us') {
+            if (url.hostname === 'meet.google.com') {
+                const botones = Array.from(document.querySelectorAll('button'));
+                const botonSalir = botones.find(b => {
+                    const label = b.getAttribute('aria-label')?.toLowerCase();
+                    return label && (label.includes('salir de la llamada') || label.includes('exit the call'));
+                });
+                const cerrar = confirm("¿Quieres salir de la llamada?");
+                if (cerrar) {
+                    if (botonSalir) {
+                        console.log('Click en botonSalir');
+                        botonSalir.click();
+                    }
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                }
+            } else if (url.hostname === 'app.zoom.us') {
                 const botones = Array.from(document.querySelectorAll('button'));
                 const botonSalir1 = botones.find(b => {
                     const label = b.getAttribute('aria-label')?.toLowerCase();
@@ -49,21 +65,32 @@
                 const cerrar = confirm("¿Quieres salir de la llamada?");
                 if (cerrar) {
                     if (botonSalir1) {
-                        console.log('Clic en botonSalir1');
+                        console.log('Click en botonSalir1');
                         botonSalir1.click();
+                    } else {
+                        const botonSalirInicio = document.querySelector('button.leave-btn');
+                        if (botonSalirInicio) {
+                            console.log('Click en botonSalirInicio');
+                            botonSalirInicio.click();
+                        }
+                        setTimeout(() => {
+                            window.close();
+                        }, 1500);
                     }
                     setTimeout(() => {
                         const botonSalir2 = Array.from(document.querySelectorAll('button')).find(b =>
                             ['salir de la reunión', 'leave meeting'].includes(b.textContent.trim().toLowerCase())
                         );
                         if (botonSalir2) {
-                            console.log('Clic en botonSalir2 (después de aparecer)');
+                            console.log('Click en botonSalir2 (después de aparecer)');
                             botonSalir2.click();
                         }}, 600);
                     setTimeout(() => {
                             window.close();
-                        }, 2000);
+                        }, 1500);
                 }
+            } else if (url.hostname === 'zoom.us') {
+                window.close();
             } else {
                 const cerrar = confirm("¿Quieres salir de la llamada?");
                 if (cerrar) {
@@ -137,7 +164,7 @@
                 } else {
                     console.log('Botón "Unirme ahora" no encontrado (Meet)');
                 }
-            }, 5000);
+            }, 3000);
         });
     }
 
@@ -152,7 +179,7 @@
                 } else {
                     console.log('Botón "Unirse" no encontrado (Zoom)');
                 }
-            }, 5000);
+            }, 3000);
         });
     }
 
@@ -168,6 +195,12 @@
                     console.log('Botón "Unirse ahora" no encontrado (Teams)');
                 }
             }, 12000);
+            setTimeout(() => {
+                const botonMicro = document.querySelector('button[data-inp="microphone-button"]');
+                if (botonMicro) {
+                    botonMicro.blur();
+                }
+            }, 40000);
         });
     }
 
@@ -182,7 +215,7 @@
                 } else {
                     console.log('Botón "Unirme ahora" no encontado (Jitsi)');
                 }
-            }, 4000);
+            }, 3000);
         });
     }
     
