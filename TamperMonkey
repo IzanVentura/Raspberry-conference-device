@@ -125,6 +125,9 @@
                 if (botonMicro) {
                     botonMicro.click();
                     console.log('Botón "Microfono" pulsado (Zoom)');
+                    if (botonMicro) {
+                        botonMicro.blur();
+                    }
                 } else {
                     console.log('Botón "Microfono" no encontrado (Zoom)');
                 }

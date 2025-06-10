@@ -194,7 +194,6 @@ def launch_chromium():
             subprocess.Popen([
                 'chromium',
                 '--start-fullscreen',
-                '--user-data-dir=/home/pi/.config/chromium',
                 '--force-renderer-accessibility',
                 '--enable-remote-extensions',
                 '--disable-features=WebRtcUseEchoCanceller3,WebRtcUseHardwareAcousticEchoCanceller,WebRtcUseExperimentalAgc',
