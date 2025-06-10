@@ -27,21 +27,28 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 
 First of all you have to access your [google cloud console](https://console.cloud.google.com/)
 You have to select your current project on the left and then on the pop-up window, on the top right corner you create a new one.
-![Google cloud console](img/Proyect.png)
+
+<img src="img/Proyect.png" alt="Google cloud console - Project selection" width="400"/>
 
 Then you open the left menu with the 3 bars and go to "APIs and services" > "Credentials".
-![Google cloud console](img/Credentials.png)
+
+<img src="img/Credentials.png" alt="Google cloud console - Credentials menu" width="400"/>
 
 Next you have to create a new OAuth ID client. You select desktop app and give a name. This will pop-up a window and you scroll down and you can download a JSON. **IMPORTANT** to rename it to "credential.json" and move it to the same folder as the "Setup.sh".
-![Google cloud console](img/OAuthClient.png)
+
+<img src="img/OAuthClient.png" alt="Google cloud console - Create OAuth client ID" width="400"/>
 
 Next you need to put your email like a test user. To do this you have to open your recently created client.
-![Google cloud console](img/Client.png)
+
+<img src="img/Client.png" alt="Google cloud console - OAuth client configuration" width="400"/>
+
 Then on the left you go to public and scroll down to test users and you add the email of the account that is going to be in the Raspberry.
-![Google cloud console](img/ClientPublic.png)
+
+<img src="img/ClientPublic.png" alt="Google cloud console - Add test users" width="400"/>
 
 Then we have to enable the Google calendar API. To do this you go to "APIs and services" > "APIs and services enabled" and you click the button to enable APIs and services. Then you search for "Google calendar API" and enable it.
-![Google cloud console](img/Apis.png)
+
+<img src="img/Apis.png" alt="Google cloud console - Enable Google Calendar API" width="400"/>
 
 ### 2. Change wayland to X11
 
@@ -70,14 +77,19 @@ Then this will open a chromium browser (If you are slow this might open multiple
 
 This is used to facilitate navigation on meeting websites.
 First you have to add to chromium the Tampermonkey extension from the chrome web store
-![Chrome web store access](img/ChromeStore.png)
+
+<img src="img/ChromeStore.png" alt="Chrome Web Store - Tampermonkey Extension" width="400"/>
+
 When you enter there, you search for Tampermonkey and install it. 
 Then you go to your extensions and you have to enable developer mode(top right corner), to make Tampermonkey work.
-![Chrome my extensions](img/Extensions.png)
+
+<img src="img/Extensions.png" alt="Chrome Extensions - Enable Developer Mode" width="400"/>
 
 Once this is active, you can now add the script. To do that you have to open the Tampermonkey script editor on the top right corner, in extensions.
-![Tampermonkey dashboard](img/Tampermonkey1.png)
-![Tampermonkey dashboard](img/Tampermonkey2.png)
+
+<img src="img/Tampermonkey1.png" alt="Tampermonkey - Script Editor Access" width="400"/>
+<img src="img/Tampermonkey2.png" alt="Tampermonkey - Script Editor View" width="400"/>
+
 Finally you have to erase the default new script and paste the script you downloaded (Tampermonkey) and then save or you can drag and drop the file and click on install.
 
 Make sure tampermonkey is enabled and the new script is enable.
@@ -122,7 +134,9 @@ When you are inside the meeting, if you press Shift+M (With the TV remote it wil
 If at the moment of joining the meeting you have problems, the tv remote is configured to be use as a kind of mouse.
 
 #### Example of my tv remote:
-![TV Remote](img/TVRemote.png)
+
+<img src="img/TVRemote.png" alt="TV Remote Button Mapping" width="400"/>
+
 **Arrows:** keyboard arrow / mouse movement
 
 **Exit/Back:** delete / right click
