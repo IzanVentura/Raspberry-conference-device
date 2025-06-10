@@ -1,4 +1,3 @@
-
 # Raspberry-conference-device
 
 This project turns a Raspberry Pi into an automatic video meeting client. The Raspberry Pi retrieves all the meetings associated with the email account and displays them in a dashboard. This project is also designed to control the Raspberry Pi with the TV remote.
@@ -27,22 +26,22 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 ### 1. Allow the script access to the calendar
 
 First of all you have to access your [google cloud console](https://console.cloud.google.com/)
-You have to select your current proyect on the left and then on the pop-up window, on the top right corner you create a new one.
-![Google cloud console](img/Proyect)
+You have to select your current project on the left and then on the pop-up window, on the top right corner you create a new one.
+![Google cloud console](img/Proyect.png)
 
 Then you open the left menu with the 3 bars and go to "APIs and services" > "Credentials".
-![Google cloud console](img/Credentials)
+![Google cloud console](img/Credentials.png)
 
-Next you have to create a new OAuth ID client. You select desktop app and give a name. This will pop-up a windows and you scroll down and you can download a JSON. **IMPORTANT** to rename it to "credential.json" and move it to the same folder as the "Setup.sh".
-![Google cloud console](img/OAuthClient)
+Next you have to create a new OAuth ID client. You select desktop app and give a name. This will pop-up a window and you scroll down and you can download a JSON. **IMPORTANT** to rename it to "credential.json" and move it to the same folder as the "Setup.sh".
+![Google cloud console](img/OAuthClient.png)
 
 Next you need to put your email like a test user. To do this you have to open your recently created client.
-![Google cloud console](img/Client)
-Then on the left yo go to public and scroll down to test users and you add the email of the account that is going to be in the Raspberry.
-![Google cloud console](img/ClientPublic)
+![Google cloud console](img/Client.png)
+Then on the left you go to public and scroll down to test users and you add the email of the account that is going to be in the Raspberry.
+![Google cloud console](img/ClientPublic.png)
 
 Then we have to enable the Google calendar API. To do this you go to "APIs and services" > "APIs and services enabled" and you click the button to enable APIs and services. Then you search for "Google calendar API" and enable it.
-![Google cloud console](img/Apis)
+![Google cloud console](img/Apis.png)
 
 ### 2. Change wayland to X11
 
@@ -51,41 +50,41 @@ To change it you have to open a terminal and write
 ```bash
 sudo raspi-config
 ```
-The you go to "6 Advanced options" > "A6 Wayland" > "W1 X11".
-This might reboot you system
+Then you go to "6 Advanced options" > "A6 Wayland" > "W1 X11".
+This might reboot your system
 
 ### 3. Generate token
 
 First you open chromium and log in with the account.
 
-The next thing is to download this repository into your Raspberry and give permision to execute the setup.sh.
+The next thing is to download this repository into your Raspberry and give permission to execute the setup.sh.
 ```bash
 chmod +x Setup.sh
 ```
-This script will create a folder on your home named "RPI-Conference". Also this is goingo to create 2 services to run the calendar and another one to control the Raspberry with the TV remote.
+This script will create a folder on your home named "RPI-Conference". Also this is going to create 2 services to run the calendar and another one to control the Raspberry with the TV remote.
 
 The service will open a terminal to allow chrome, if you write "A" -> Always this will work.
-Then this will open a chromium browser (If you are slow this might open multiple windows, but this is normal) and you have to select your account and give permision. And with this, all should work
+Then this will open a chromium browser (If you are slow this might open multiple window, but this is normal) and you have to select your account and give permission. And with this, all should work
 
 ### 4. Setup Tampermonkey
 
 This is used to facilitate navigation on meeting websites.
 First you have to add to chromium the Tampermonkey extension from the chrome web store
-![Chrome web store access](img/ChromeStore)
+![Chrome web store access](img/ChromeStore.png)
 When you enter there, you search for Tampermonkey and install it. 
 Then you go to your extensions and you have to enable developer mode(top right corner), to make Tampermonkey work.
-![Chrome my extensions](img/Extensions)
+![Chrome my extensions](img/Extensions.png)
 
 Once this is active, you can now add the script. To do that you have to open the Tampermonkey script editor on the top right corner, in extensions.
-![Tampermonkey dashboard](img/Tampermonkey1)
-![Tampermonkey dashboard](img/Tampermonkey2)
-Finally you have to erase the default new script and paste the script you donwloaded (Tampermonkey) and then save or you can drag and drop the file and click on install.
+![Tampermonkey dashboard](img/Tampermonkey1.png)
+![Tampermonkey dashboard](img/Tampermonkey2.png)
+Finally you have to erase the default new script and paste the script you downloaded (Tampermonkey) and then save or you can drag and drop the file and click on install.
 
-Make sure tampermonkey is enable and the new script is enable.
+Make sure tampermonkey is enabled and the new script is enable.
 
 ### 5. Recomendation
 
-You can create a test meeting for all platforms you want to use it, this is for testing that all works and for give permision to the camera and microphone.
+You can create a test meeting for all platforms you want to use it, this is for testing that all works and for give permission to the camera and microphone.
 ## Troubleshooting
 
 * Make sure CEC is enabled on your TV (Depending on the brand will have a different name)
@@ -108,8 +107,8 @@ sudo apt-get install kodi -y
 
 kodi
 ```
-* At the moment the firs time chromium opens it might be pretty slow but then it shoul work fine
-* If in the dashboard the meeting doesn't open make sure the link it is in the location, description or the google meet and be careful if there are multiple links on the event(The script just picks the first).
+* At the moment the first time chromium opens it might be pretty slow but then it should work fine
+* If in the dashboard the meeting doesn't open make sure the link it is in the location, description or the google meet and be careful if there are multiple links on the event(The script just picks the firstt).
 ## Usage
 
 This part is thinking that all things are working fine(I am using meet as example but all supported meeting webs work similar)
@@ -123,7 +122,7 @@ When you are inside the meeting, if you press Shift+M (With the TV remote it wil
 If at the moment of joining the meeting you have problems, the tv remote is configured to be use as a kind of mouse.
 
 #### Example of my tv remote:
-![TV Remote](img/TVRemote)
+![TV Remote](img/TVRemote.png)
 **Arrows:** keyboard arrow / mouse movement
 
 **Exit/Back:** delete / right click
