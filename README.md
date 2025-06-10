@@ -147,7 +147,7 @@ If at the moment of joining the meeting you have problems, the tv remote is conf
 
 **Forward:** Tab
 
-**Backward:** Shift*Tab
+**Backward:** Shift+Tab
 
 **Red:** Shift+S
 
