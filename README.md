@@ -11,6 +11,7 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 * When someone uses this room, they turn on the TV and select the meeting they want to join.
 * Easy to understand
 * Easy to use
+* Controlled by TV remote
 ## Requirements
 
 * Raspberry pi 4 / 5 (I have tried this with a Raspberry pi 5 but I think that if the Raspberry is powerfull enough it could work)
@@ -19,7 +20,7 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 * A camera and a microphone
 * The user **must** be "pi"
 * It has to be a Raspberry desktop
-* Chromium has to be in english or spanish (This is not necessary to the program to work but there are some automation features that are not going to work)
+* Chromium has to be in english or spanish (This is not necessary for the program to work but there are some automation features that are not going to work)
 * The email account must have google calendar
 ## Installation guide
 
@@ -76,16 +77,16 @@ Then this will open a chromium browser (If you are slow this might open multiple
 ### 4. Setup Tampermonkey
 
 This is used to facilitate navigation on meeting websites.
-First you have to add to chromium the Tampermonkey extension from the chrome web store
+First you have to add to chromium the [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?utm_source=ext_app_menu) extension from the chrome web store
 
 <img src="img/ChromeStore.png" alt="Chrome Web Store - Tampermonkey Extension" width="400"/>
 
 When you enter there, you search for Tampermonkey and install it. 
-Then you go to your extensions and you have to enable developer mode(top right corner), to make Tampermonkey work.
+Then you go to [your extensions](chrome://extensions/) and you have to enable developer mode(top right corner), to make Tampermonkey work.
 
 <img src="img/Extensions.png" alt="Chrome Extensions - Enable Developer Mode" width="400"/>
 
-Once this is active, you can now add the script. To do that you have to open the Tampermonkey script editor on the top right corner, in extensions.
+Once this is active, you can now [add the script](chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html#nav=new-user-script+editor). To do that you have to open the Tampermonkey script editor on the top right corner, in extensions.
 
 <img src="img/Tampermonkey1.png" alt="Tampermonkey - Script Editor Access" width="400"/>
 <img src="img/Tampermonkey2.png" alt="Tampermonkey - Script Editor View" width="400"/>
