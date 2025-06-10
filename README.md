@@ -22,13 +22,12 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 * Chromium has to be in english or spanish (This is not necessary to the program to work but there are some automation features that are not going to work)
 * The email account must have google calendar
 ## Installation guide
-<img src="img/Proyect.png" alt="Google cloud console" width="100"/>
 
 ### 1. Allow the script access to the calendar
 
 First of all you have to access your [google cloud console](https://console.cloud.google.com/)
 You have to select your current project on the left and then on the pop-up window, on the top right corner you create a new one.
-![Google cloud console](img/Proyect.png)
+<img src="img/Proyect.png" alt="Google cloud console" width="200"/>
 
 Then you open the left menu with the 3 bars and go to "APIs and services" > "Credentials".
 ![Google cloud console](img/Credentials.png)
