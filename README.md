@@ -27,7 +27,7 @@ This project turns a Raspberry Pi into an automatic video meeting client. The Ra
 
 First of all you have to access your [google cloud console](https://console.cloud.google.com/)
 You have to select your current project on the left and then on the pop-up window, on the top right corner you create a new one.
-<img src="img/Proyect.png" alt="Google cloud console" width="200"/>
+<img src="img/Proyect.png" alt="Google cloud console" width="300"/>
 
 Then you open the left menu with the 3 bars and go to "APIs and services" > "Credentials".
 ![Google cloud console](img/Credentials.png)
