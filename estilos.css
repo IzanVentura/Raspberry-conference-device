@@ -4,7 +4,7 @@ body {
   font-family: 'Roboto', sans-serif;
   background: linear-gradient(to right, #f9f9f9, #e0eafc);
   margin: 0;
-  padding: 40px;
+  padding: 30px;
 }
 
 h1#Eventos {
@@ -55,7 +55,7 @@ h1#Eventos {
 
 .evento h3 {
   margin: 0 0 10px;
-  font-size: 1.2em;
+  font-size: 1.5em;
   color: #2c3e50;
   white-space: normal;
   overflow-wrap: break-word;
