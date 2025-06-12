@@ -102,12 +102,13 @@ Make sure tampermonkey is enabled and the new script is enable.
 You can create a test meeting for all platforms you want to use it, this is for testing that all works and for give permission to the camera and microphone so the next time it wont ask again.
 ## Troubleshooting
 
-* Make sure CEC is enabled on your TV (Depending on the brand will have a different name)
 * Try stopping the service and executing the script manually
 ```bash
 sudo systemctl stop abrir-reunion.service
 python3 /home/pi/RPI-Conference/Abrir-reunion.py
 ```
+* Make sure CEC is enabled on your TV (Depending on the brand will have a different name)
+* If CEC doesn't work try to turn off the TV and turn it back on
 * If the TV remote doesn't work stop the service and try this and see what happen
 ```bash
 sudo systemctl stop cec_control.service
@@ -124,7 +125,7 @@ sudo apt-get install kodi -y
 ```bash
 kodi
 ```
-* At the moment the first time chromium opens it might be pretty slow but then it should work fine
+* At the moment the first time chromium opens it is very slow but after a minute it should work fine
 * If in the dashboard the meeting doesn't open make sure the link it is in the location, description or the google meet and be careful if there are multiple links on the event(The script just picks the first).
 ## Usage
 
@@ -134,7 +135,7 @@ The script will open a HTML (on full screen) with the events in the next 7 days 
 
 Once the link is open the button to join the meeting will be selected, so you just have to click it (with the TV remote it will be just pressing the ok button). 
 
-When you are inside the meeting, if you press Shift+M (With the TV remote it will just be click one button) you will mute or unmute the microphone. Also if you press Shift+S (With the TV remote it will just be click one button), chrome is going to ask if you want to leave the meeting, if you say yes the meeting window will close and go back to the event dashboard (Except in Zoom where you have to press Shift+S multiple times)
+When you are inside the meeting, if you press Shift+M (With the TV remote it will just be click one button) you will mute or unmute the microphone. Also if you press Shift+S (With the TV remote it will just be click one button), chrome is going to ask if you want to leave the meeting, if you say yes the meeting window will close and go back to the event dashboard (Except in Zoom where you have to press Shift+S 2 times)
 
 If at the moment of joining the meeting you have problems, the tv remote is configured to be use as a kind of mouse.
 
