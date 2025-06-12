@@ -72,7 +72,9 @@ chmod +x Setup.sh
 This script will create a folder on your home named "RPI-Conference". Also this is going to create 2 services to run the calendar and another one to control the Raspberry with the TV remote.
 
 The service will open a terminal to allow chrome, if you write "A" -> Always this will work.
-Then this will open a chromium browser (If you are slow this might open multiple window, but this is normal) and you have to select your account and give permission. And with this, all should work
+Then this will open a chromium browser (If you are slow this might open multiple windows, but this is normal) and you have to select your account and give permission. And with this, all should work
+
+This process should generate a file named token.json.
 
 ### 4. Setup Tampermonkey
 
@@ -97,7 +99,7 @@ Make sure tampermonkey is enabled and the new script is enable.
 
 ### 5. Recomendation
 
-You can create a test meeting for all platforms you want to use it, this is for testing that all works and for give permission to the camera and microphone.
+You can create a test meeting for all platforms you want to use it, this is for testing that all works and for give permission to the camera and microphone so the next time it wont ask again.
 ## Troubleshooting
 
 * Make sure CEC is enabled on your TV (Depending on the brand will have a different name)
@@ -109,7 +111,8 @@ python3 /home/pi/RPI-Conference/Abrir-reunion.py
 * If the TV remote doesn't work stop the service and try this and see what happen
 ```bash
 sudo systemctl stop cec_control.service
-
+```
+```bash
 cec-client | while read line; do
     echo "$line" | grep "key pressed" && echo "¡Botón pulsado!"
 done
@@ -117,11 +120,12 @@ done
 If this does nothing try installing kodi and try to run it
 ```bash
 sudo apt-get install kodi -y
-
+```
+```bash
 kodi
 ```
 * At the moment the first time chromium opens it might be pretty slow but then it should work fine
-* If in the dashboard the meeting doesn't open make sure the link it is in the location, description or the google meet and be careful if there are multiple links on the event(The script just picks the firstt).
+* If in the dashboard the meeting doesn't open make sure the link it is in the location, description or the google meet and be careful if there are multiple links on the event(The script just picks the first).
 ## Usage
 
 This part is thinking that all things are working fine(I am using meet as example but all supported meeting webs work similar)

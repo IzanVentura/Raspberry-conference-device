@@ -14,7 +14,6 @@ pip3 install --upgrade \
     --break-system-packages
 
 mkdir -p /home/pi/RPI-Conference
-echo "" > /home/pi/RPI-Conference/.last_link_opened
 echo "" > /home/pi/RPI-Conference/eventos.html
 cp ./Abrir-reunion.py /home/pi/RPI-Conference/Abrir-reunion.py
 cp ./cec_control.sh /home/pi/RPI-Conference/cec_control.sh

@@ -9,7 +9,7 @@
 // @match        *://zoom.us/*
 // @match        *://teams.live.com/*
 // @match        *://meet.jit.si/*
-// @grant        none
+// @grant        window.close
 // ==/UserScript==
 
 (function () {
@@ -20,6 +20,10 @@
         {
             match: url => url.hostname === 'meet.google.com',
             action: autoUnirseMeet
+        },
+        {
+            match: url => url.hostname === 'zoom.us',
+            action: cerrarZoom
         },
         {
             match: url => url.hostname === 'app.zoom.us',
@@ -56,41 +60,41 @@
                         window.close();
                     }, 1000);
                 }
+            } else if (url.hostname === 'app.zoom.us' && url.pathname === '/wc/' || url.pathname === '/wc') {
+                window.close();
             } else if (url.hostname === 'app.zoom.us') {
                 const botones = Array.from(document.querySelectorAll('button'));
                 const botonSalir1 = botones.find(b => {
                     const label = b.getAttribute('aria-label')?.toLowerCase();
-                    return label && (label.includes('fin') || label.includes('leave'));
+                    return label && (label.includes('salir') || label.includes('leave'));
                 });
+                const botonSalirInicio = document.querySelector('button.leave-btn');
+                const botonVolverInicio = document.querySelector('button.btn-back-pwa');
                 const cerrar = confirm("¿Quieres salir de la llamada?");
                 if (cerrar) {
                     if (botonSalir1) {
                         console.log('Click en botonSalir1');
                         botonSalir1.click();
+                        setTimeout(() => {
+                            const botonSalir2 = Array.from(document.querySelectorAll('button')).find(b =>
+                                ['salir de la reunión', 'leave meeting'].includes(b.textContent.trim().toLowerCase())
+                            );
+                            if (botonSalir2) {
+                                console.log('Click en botonSalir2 (después de aparecer)');
+                                botonSalir2.click();
+                        }}, 600);
+                    } else if (botonSalirInicio) {
+                        console.log('Click en botonSalirInicio');
+                        botonSalirInicio.click();
+                    } else if (botonVolverInicio) {
+                        console.log('Click en botonVolverInicio');
+                        botonVolverInicio.click();
                     } else {
-                        const botonSalirInicio = document.querySelector('button.leave-btn');
-                        if (botonSalirInicio) {
-                            console.log('Click en botonSalirInicio');
-                            botonSalirInicio.click();
-                        }
                         setTimeout(() => {
                             window.close();
-                        }, 1500);
+                        }, 1000);
                     }
-                    setTimeout(() => {
-                        const botonSalir2 = Array.from(document.querySelectorAll('button')).find(b =>
-                            ['salir de la reunión', 'leave meeting'].includes(b.textContent.trim().toLowerCase())
-                        );
-                        if (botonSalir2) {
-                            console.log('Click en botonSalir2 (después de aparecer)');
-                            botonSalir2.click();
-                        }}, 600);
-                    setTimeout(() => {
-                            window.close();
-                        }, 1500);
                 }
-            } else if (url.hostname === 'zoom.us') {
-                window.close();
             } else {
                 const cerrar = confirm("¿Quieres salir de la llamada?");
                 if (cerrar) {
@@ -99,7 +103,7 @@
             };
         }
 
-        // Shift+M: acción personalizada por plataforma
+        // Shift+M: Silenciar micrófono
         if (event.shiftKey && event.key.toLowerCase() === 'm') {
             const url = window.location;
 
@@ -175,7 +179,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const botones = Array.from(document.querySelectorAll('button'));
-                const botonUnirme = botones.find(b => ['unirse', 'join'].includes(b.textContent.trim().toLowerCase()));
+                const botonUnirme = botones.find(b => ['entrar', 'join'].includes(b.textContent.trim().toLowerCase()));
                 if (botonUnirme) {
                     botonUnirme.focus();
                     console.log('Botón "Unirse" enfocado (Zoom)');
@@ -221,7 +225,15 @@
             }, 3000);
         });
     }
-    
+
+    function cerrarZoom() {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.close();
+            }, 2000);
+        });
+    }
+
     /*** === Router principal === ***/
     const urlActual = window.location;
 

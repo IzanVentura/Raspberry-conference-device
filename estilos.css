@@ -49,8 +49,10 @@ h1#Eventos {
 .evento a {
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: flex;
   padding: 15px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .evento h3 {
@@ -76,3 +78,25 @@ h1#Eventos {
   margin-top: 50px;
 }
 
+.contenido-evento {
+  flex: 1;
+  padding-right: 10px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 5px;
+  float: right;
+  margin-left: 10px;
+}
+
+.logo-text {
+  float: right;
+  font-size: 0.9em;
+  color: #888;
+  margin-left: 10px;
+  padding-top: 10px;
+}

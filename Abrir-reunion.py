@@ -59,10 +59,12 @@ def extract_links_from_event(event):
             if simplified in seen:
                 continue
             seen.add(simplified)
-            return url
+
+            domain = parsed.netloc
+        
+            return url, domain
 
     return None
-
 
 def is_chromium_running():
     try:
@@ -99,15 +101,26 @@ def generate_html(events):
             summary = event.get('summary', 'Sin título')
             start_dt = parser.isoparse(event['start']['dateTime']).astimezone(LOCAL_TZ)
             end_dt = parser.isoparse(event['end']['dateTime']).astimezone(LOCAL_TZ)
-            link = extract_links_from_event(event)
+            link, domain = extract_links_from_event(event)
+            
+            img_tag = ""
+            image_path = f"/home/pi/RPI-Conference/images/{domain}.png"
+            if os.path.exists(image_path):
+                img_tag = f'<img src="{image_path}" alt="{domain}" class="logo">'
+            else:
+                img_tag = f'<span class="logo-text">{html.escape(domain)}</span>'
+
             if not link:
                 continue
             html_blocks += f"""
             <div class="evento" tabindex="0" data-index="{i}">
-              <a href="{link}" target="_blank">
+            <a href="{link}" target="_blank">
+                <div class="contenido-evento">
                 <h3>{html.escape(summary)}</h3>
                 <p class="fecha">Inicio: {start_dt.strftime('%Y-%m-%d %H:%M')}<br>Fin: {end_dt.strftime('%Y-%m-%d %H:%M')}</p>
-              </a>
+                </div>
+                {img_tag}
+            </a>
             </div>
             """
 
