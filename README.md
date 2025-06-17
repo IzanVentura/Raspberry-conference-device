@@ -65,7 +65,7 @@ This might reboot your system
 
 First you open chromium and log in with the account.
 
-The next thing is to download this repository into your Raspberry and give permission to execute the setup.sh.
+The next thing is to download this repository into your Raspberry and give permission to execute the Setup.sh.
 ```bash
 chmod +x Setup.sh
 ```

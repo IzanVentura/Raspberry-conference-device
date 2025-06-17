@@ -101,7 +101,11 @@ def generate_html(events):
             summary = event.get('summary', 'Sin título')
             start_dt = parser.isoparse(event['start']['dateTime']).astimezone(LOCAL_TZ)
             end_dt = parser.isoparse(event['end']['dateTime']).astimezone(LOCAL_TZ)
-            link, domain = extract_links_from_event(event)
+            link_data = extract_links_from_event(event)
+            if not link_data:
+                continue
+            link, domain = link_data
+
             
             img_tag = ""
             image_path = f"/home/pi/RPI-Conference/images/{domain}.png"
@@ -246,7 +250,6 @@ def main_loop():
             if not events:
                 print('[INFO] No upcoming events in the next 7 days.')
 
-            # Genera el HTML y lanza Chromium en todos los casos
             generate_html(events)
             launch_chromium()
 

@@ -10,11 +10,10 @@ pip3 install --upgrade \
     google-auth-oauthlib \
     pytz \
     python-dateutil \
-    pyautogui\
-    --break-system-packages
+    pyautogui --break-system-packages
 
 mkdir -p /home/pi/RPI-Conference
-echo "" > /home/pi/RPI-Conference/eventos.html
+echo "" >/home/pi/RPI-Conference/eventos.html
 cp ./Abrir-reunion.py /home/pi/RPI-Conference/Abrir-reunion.py
 cp ./cec_control.sh /home/pi/RPI-Conference/cec_control.sh
 cp ./estilos.css /home/pi/RPI-Conference/estilos.css
@@ -22,10 +21,9 @@ cp ./credentials.json /home/pi/RPI-Conference/credentials.json
 chmod +x /home/pi/RPI-Conference/Abrir-reunion.py
 chmod +x /home/pi/RPI-Conference/cec_control.sh
 
-
 mkdir -p /home/pi/.config/autostart
 
-cat > /home/pi/.config/autostart/cec-remote.desktop << EOF
+cat >/home/pi/.config/autostart/cec-remote.desktop <<EOF
 [Desktop Entry]
 Type=Application
 Name=CEC Remote Script
@@ -35,7 +33,7 @@ Terminal=false
 EOF
 
 servicePath="/etc/systemd/system/cec_control.service"
-sudo tee "$servicePath" > /dev/null << EOF
+sudo tee "$servicePath" >/dev/null <<EOF
 [Unit]
 Description=CEC Remote Control Service
 After=graphical.target
@@ -52,9 +50,8 @@ RestartSec=3
 WantedBy=graphical.target
 EOF
 
-
 reunionServicePath="/etc/systemd/system/abrir-reunion.service"
-sudo tee "$reunionServicePath" > /dev/null << EOF
+sudo tee "$reunionServicePath" >/dev/null <<EOF
 [Unit]
 Description=Servicio para abrir reuniones automáticamente
 After=graphical.target
