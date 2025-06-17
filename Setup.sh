@@ -10,7 +10,8 @@ pip3 install --upgrade \
     google-auth-oauthlib \
     pytz \
     python-dateutil \
-    pyautogui --break-system-packages
+    pyautogui \
+    --break-system-packages
 
 mkdir -p /home/pi/RPI-Conference
 echo "" >/home/pi/RPI-Conference/eventos.html
@@ -23,7 +24,7 @@ chmod +x /home/pi/RPI-Conference/cec_control.sh
 
 mkdir -p /home/pi/.config/autostart
 
-cat >/home/pi/.config/autostart/cec-remote.desktop <<EOF
+cat > /home/pi/.config/autostart/cec-remote.desktop <<EOF
 [Desktop Entry]
 Type=Application
 Name=CEC Remote Script
