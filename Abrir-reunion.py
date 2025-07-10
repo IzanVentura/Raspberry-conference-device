@@ -78,16 +78,28 @@ def is_chromium_running():
 def get_calendar_service():
     creds = None
     if os.path.exists(TOKEN_PATH):
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        try:
+            creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        except Exception as e:
+            print(f"[ERROR] Error cargando token.json: {e}")
+            os.remove(TOKEN_PATH)
+            return get_calendar_service()
+
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"[ERROR] Error al refrescar token: {e}")
+                os.remove(TOKEN_PATH)
+                return get_calendar_service()
         else:
             flow = InstalledAppFlow.from_client_secrets_file(CRED_PATH, SCOPES)
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_local_server(port=0, access_type='offline', prompt='consent', approval_prompt='force')
         with open(TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
     return build('calendar', 'v3', credentials=creds)
+
 
 def generate_html(events):
     html_blocks = ""
