@@ -246,7 +246,7 @@ def main_loop():
     service = get_calendar_service()
     while True:
         try:
-            now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+            now_utc = datetime.now(pytz.utc)
             future_utc = now_utc + timedelta(days=7)
 
             events_result = service.events().list(
