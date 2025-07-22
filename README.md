@@ -43,7 +43,7 @@ Next you need to put your email like a test user. To do this you have to open yo
 
 <img src="img/Client.png" alt="Google cloud console - OAuth client configuration" width="400"/>
 
-Then on the left you go to public and scroll down to test users and you add the email of the account that is going to be in the Raspberry.
+Then on the left you go to public and change the publication status to "On production" (you don't need to verify the app ), then scroll down to test users and you add the email of the account that is going to be in the Raspberry.
 
 <img src="img/ClientPublic.png" alt="Google cloud console - Add test users" width="400"/>
 
